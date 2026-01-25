@@ -47,5 +47,3 @@ A **Random Forest Classifier** is used to model booking completion outcomes.
 - Pandas, NumPy
 - Matplotlib
 - Scikit-learn
-pip install -r requirements.txt
-python BA_Customer_Booking_Prediction.py
