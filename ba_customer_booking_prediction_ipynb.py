@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # The dataset contains customer-level booking behaviour
 # Target variable: 'booking_complete' (1 = booking made, 0 = not made)
 # Display the first few rows to understand the structure
-df = pd.read_csv("customer_booking.csv", encoding='latin1')
+df = pd.read_csv("C:\Projects\BA_Customer_Booking_Prediction\Data\customer_booking.csv", encoding='latin1')
 df.head()
 
 """The sample data represents customer flight booking attempts for the AKL–DEL route, mostly round-trip journeys booked through the internet. Customers vary in the number of passengers, booking lead time, and length of stay. Some customers opted for additional services such as extra baggage, preferred seats, or in-flight meals, while others did not. Despite early booking in many cases, these sample records show that the bookings were not completed (booking_complete = 0), indicating that factors beyond early planning—such as preferences, timing, or customer origin—may influence final booking decisions."""
