@@ -1,3 +1,24 @@
+"""
+==============================================================================
+British Airways Customer Booking Prediction
+==============================================================================
+
+Problem Statement:
+    In the airline industry, a significant proportion of customers who initiate
+    the booking process do not complete their purchase. Understanding the factors
+    that influence booking completion is critical for airlines to optimize their
+    conversion strategies, reduce revenue leakage, and improve customer
+    experience. This project aims to build a predictive classification model
+    using historical customer booking data to determine whether a customer will
+    complete a flight booking. The model leverages customer demographics, travel
+    characteristics, and service preferences to identify key drivers of booking
+    completion and to provide actionable insights for business decision-making.
+
+Author : Rutuja1423
+Date   : April 2026
+==============================================================================
+"""
+
 # STEP 1: Import required libraries
 # pandas and numpy are used for data handling and manipulation
 # matplotlib is used for visualisation
@@ -14,7 +35,7 @@ import matplotlib.pyplot as plt
 df = pd.read_csv("C:\Projects\BA_Customer_Booking_Prediction\Data\customer_booking.csv", encoding='latin1')
 df.head()
 
-"""The sample data represents customer flight booking attempts for the AKL–DEL route, mostly round-trip journeys booked through the internet. Customers vary in the number of passengers, booking lead time, and length of stay. Some customers opted for additional services such as extra baggage, preferred seats, or in-flight meals, while others did not. Despite early booking in many cases, these sample records show that the bookings were not completed (booking_complete = 0), indicating that factors beyond early planning—such as preferences, timing, or customer origin—may influence final booking decisions."""
+"""The sample data represents customer flight booking attempts for the AKL-DEL route, mostly round-trip journeys booked through the internet. Customers vary in the number of passengers, booking lead time, and length of stay. Some customers opted for additional services such as extra baggage, preferred seats, or in-flight meals, while others did not. Despite early booking in many cases, these sample records show that the bookings were not completed (booking_complete = 0), indicating that factors beyond early planning -- such as preferences, timing, or customer origin -- may influence final booking decisions."""
 
 #STEP 3: Explore the dataset
 # Checking data types, missing values, and basic structure
@@ -35,12 +56,12 @@ df["flight_day"] = df["flight_day"].map(mapping)
 # To check successfully converted to numerical values.
 df["flight_day"].unique()
 
-"""The flight_day column has been successfully converted from categorical day names to numerical values (1–7), representing days from Monday to Sunday."""
+"""The flight_day column has been successfully converted from categorical day names to numerical values (1-7), representing days from Monday to Sunday."""
 
 # Summary statistics for numerical variables
 df.describe()
 
-"""The summary statistics show that most bookings involve 1–2 passengers, with an average purchase lead time of about 85 days, indicating many customers book well in advance. The typical length of stay is around 23 days, and flights are most commonly scheduled around mid-day. Service add-ons such as extra baggage, preferred seats, and in-flight meals are chosen by a significant portion of customers. The target variable booking_complete has a low mean value, confirming that only a small percentage of bookings are completed, which indicates class imbalance in the dataset."""
+"""The summary statistics show that most bookings involve 1-2 passengers, with an average purchase lead time of about 85 days, indicating many customers book well in advance. The typical length of stay is around 23 days, and flights are most commonly scheduled around mid-day. Service add-ons such as extra baggage, preferred seats, and in-flight meals are chosen by a significant portion of customers. The target variable booking_complete has a low mean value, confirming that only a small percentage of bookings are completed, which indicates class imbalance in the dataset."""
 
 # Check the distribution of the target variable
 # This helps identify whether the data is imbalanced
@@ -96,7 +117,7 @@ cv_scores = cross_val_score(rf, X_encoded, y,cv=5,scoring='roc_auc')
 print("Cross-validation AUC scores:", cv_scores)
 print("Mean CV AUC:", cv_scores.mean())
 
-"""The cross-validation results show high variation in ROC-AUC scores across different folds, with a low mean AUC of approximately 0.48. This indicates that the model’s performance is unstable across subsets of the data and may not generalize well. The inconsistency suggests the presence of class imbalance and potential data complexity, highlighting the need for further model tuning or alternative modeling approaches."""
+"""The cross-validation results show high variation in ROC-AUC scores across different folds, with a low mean AUC of approximately 0.48. This indicates that the model's performance is unstable across subsets of the data and may not generalize well. The inconsistency suggests the presence of class imbalance and potential data complexity, highlighting the need for further model tuning or alternative modeling approaches."""
 
 # STEP 9: Feature importance analysis
 # Feature importance helps identify which variables
@@ -114,6 +135,5 @@ plt.yticks(range(len(indices)), X_encoded.columns[indices])
 plt.xlabel("Feature Importance")
 plt.title("Top 15 Features Influencing Booking Completion")
 plt.show()
-#This output shows that the most important variable in the model was purchase_lead that is the time between purchase and depature .
 
 """The feature importance analysis shows that purchase_lead is the most influential factor in predicting booking completion, indicating that customers who plan earlier behave differently from last-minute bookers. Other important features include length of stay, flight hour, and flight day, suggesting that travel timing and trip duration strongly affect booking decisions. Customer origin, flight duration, and number of passengers also contribute, while add-on services such as extra baggage, preferred seats, and in-flight meals have a smaller but noticeable impact. Overall, booking completion is driven mainly by planning behavior and travel characteristics rather than optional services alone."""
