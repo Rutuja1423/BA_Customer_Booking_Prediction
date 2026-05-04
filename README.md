@@ -1,133 +1,73 @@
-# British Airways Customer Booking Prediction
+# BA Customer Booking Prediction
 
-| Attribute | Details |
+## 1. Business Problem
+In the airline industry, a significant proportion of customers who initiate the booking process do not complete their purchase. Understanding the factors that influence booking completion is critical for airlines to optimize their conversion strategies, reduce revenue leakage, and improve customer experience. This project identifies key drivers of booking completion to provide actionable insights for targeted marketing and customer retention.
+
+## 2. Objective
+We are predicting whether a customer will complete a flight booking based on historical customer booking data, travel characteristics, and service preferences.
+
+## 3. Dataset
+*   **Source**: British Airways Customer Booking Data
+*   **Rows**: ~50,000 customer booking attempts
+*   **Columns**: 14 (numerical and categorical features)
+*   **Target variable**: `booking_complete` (1 = completed, 0 = not completed)
+*   **Key features**: `purchase_lead`, `length_of_stay`, `flight_hour`, `flight_day`, `route`, `booking_origin`
+
+## 4. Tools Used
+*   Python
+*   Pandas (Data manipulation)
+*   NumPy (Numerical computation)
+*   Scikit-learn (Modeling and evaluation)
+*   Matplotlib (Data visualization)
+
+## 5. Methodology
+*   **Data cleaning**: Mapped categorical day names (`flight_day`) to numerical values. No missing values were found.
+*   **Feature engineering**: Applied one-hot encoding to categorical variables (`sales_channel`, `trip_type`, `booking_origin`, `route`).
+*   **Modeling**: Trained a **Random Forest Classifier** (200 estimators). Addressed class imbalance using `class_weight='balanced'`.
+*   **Validation**: 80/20 train-test split with stratification. Evaluated using accuracy, ROC-AUC, classification report, and 5-fold cross-validation.
+
+## 6. Results
+| Metric | Value |
 | :--- | :--- |
-| **Project** | British Airways Customer Booking Prediction |
-| **Domain** | Aviation / Airline |
-| **Libraries** | Pandas, NumPy, Matplotlib, Scikit-learn |
-| **Model** | Random Forest Classifier |
-| **Author** | Rutuja1423 |
-| **Date** | April 2026 |
+| **Accuracy** | 85% |
+| **ROC-AUC** | 0.79 |
+| **Precision (Completed Bookings)** | 0.53 |
+| **Recall (Completed Bookings)** | 0.12 |
+| **F1-Score (Completed Bookings)** | 0.20 |
 
-## Problem Statement
+*   **Class Imbalance Impact**: The dataset is highly imbalanced (~85% non-completed vs ~15% completed). While overall accuracy is high (driven by predicting the majority class correctly), the recall for actual completed bookings is very low (12%). The model struggles to identify the minority of customers who actually book.
+*   **Main insight**: `purchase_lead` (how far in advance the booking is initiated) is the single most important predictor. Travel timing features (length of stay, flight day) are also significant, whereas optional add-ons have a smaller impact.
+*   **Business meaning**: Early planners behave differently than last-minute searchers. Strategies to encourage booking completion might be most effective if tailored to the lead time and duration of the planned trip.
 
-In the airline industry, a significant proportion of customers who initiate the booking process do not complete their purchase. Understanding the factors that influence booking completion is critical for airlines to optimize their conversion strategies, reduce revenue leakage, and improve customer experience. This project aims to build a predictive classification model using historical customer booking data to determine whether a customer will complete a flight booking. The model leverages customer demographics, travel characteristics, and service preferences to identify key drivers of booking completion and to provide actionable insights for business decision-making.
+## 7. Visuals
+### Confusion Matrix
+The confusion matrix highlights the class imbalance issue. The model correctly identifies most non-completed bookings but misses many actual completed bookings.
+![Confusion Matrix](/r:/Projects/BA_Customer_Booking_Prediction/Image/Confusion_Matrix.png)
 
----
+### ROC Curve
+The ROC curve demonstrates the model's overall discrimination ability (AUC = 0.79), performing better than random guessing.
+![ROC Curve](/r:/Projects/BA_Customer_Booking_Prediction/Image/ROC_Curve.png)
 
-## Project Overview
+### Model Tuning Comparison (Future/Current State)
+*   **Current Baseline (Random Forest with class weights)**: High accuracy (85%), moderate AUC (0.79), poor minority class recall (12%).
+*   **Future Tuning Goal**: Implement techniques like SMOTE (Synthetic Minority Over-sampling Technique) or gradient boosting models (XGBoost/LightGBM) optimized for recall or F1-score to better capture the actual buyers, even at the cost of some overall accuracy.
 
-This project predicts whether a customer will complete a flight booking based on historical booking behaviour and travel-related features. A **Random Forest Classifier** is trained on approximately 50,000 customer booking records to model booking completion outcomes.
+## 8. How to Run
+*   **Clone repo**: `git clone https://github.com/Rutuja1423/BA_Customer_Booking_Prediction.git`
+*   **Install requirements**: `pip install -r Requirements.txt`
+*   **Run notebook**: `jupyter notebook BA_Customer_Booking_Prediction.ipynb`
 
----
+## 9. Limitations
+*   The model assumes past booking behavior is indicative of future behavior, without accounting for external factors like economic changes, seasonal promotions, or competitor pricing.
+*   The current approach does not adequately address the severe class imbalance, resulting in poor identification of actual buyers.
 
-## Dataset Description
+## 10. Future Improvements
+*   **Advanced Sampling**: Apply SMOTE or ADASYN to balance the training data.
+*   **Alternative Models**: Explore XGBoost, LightGBM, or CatBoost, which often handle imbalanced data better.
+*   **Hyperparameter Tuning**: Use GridSearchCV or RandomizedSearchCV to optimize model parameters specifically for F1-score or recall.
+*   **Threshold Tuning**: Adjust the classification decision threshold to increase recall for the positive class.
 
-| Property         | Detail                                              |
-|------------------|-----------------------------------------------------|
-| Records          | ~50,000 customer booking attempts                   |
-| Features         | 14 columns (numerical and categorical)              |
-| Target Variable  | `booking_complete` (1 = completed, 0 = not completed) |
-| Missing Values   | None                                                |
-
-### Key Features
-
-- **purchase_lead** -- Number of days between purchase date and departure date
-- **length_of_stay** -- Duration of the trip in days
-- **flight_hour** -- Scheduled hour of the flight
-- **flight_day** -- Day of the week of the flight
-- **num_passengers** -- Number of passengers in the booking
-- **sales_channel** -- Channel through which the booking was initiated
-- **trip_type** -- Type of trip (round trip, one way, circle trip)
-- **wants_extra_baggage** -- Whether the customer requested extra baggage
-- **wants_preferred_seat** -- Whether the customer requested a preferred seat
-- **wants_in_flight_meals** -- Whether the customer requested in-flight meals
-- **flight_duration** -- Duration of the flight in hours
-- **booking_origin** -- Country of origin for the booking
-- **route** -- Flight route
-
----
-
-## Methodology
-
-1. **Data Loading and Exploration** -- Loaded the dataset and examined its structure, data types, and distributions.
-2. **Data Preprocessing** -- Mapped categorical day names to numerical values and applied one-hot encoding to remaining categorical variables.
-3. **Train-Test Split** -- Split data into 80% training and 20% testing sets with stratification to preserve class distribution.
-4. **Model Training** -- Trained a Random Forest Classifier with 200 estimators and balanced class weights to address class imbalance.
-5. **Model Evaluation** -- Assessed performance using accuracy, ROC-AUC score, and a detailed classification report.
-6. **Cross-Validation** -- Performed 5-fold cross-validation to evaluate model stability and generalization.
-7. **Feature Importance Analysis** -- Identified the top 15 features contributing to booking completion predictions.
-
----
-
-## Results
-
-| Metric       | Value  |
-|--------------|--------|
-| Accuracy     | ~85%   |
-| ROC-AUC      | ~0.79  |
-
-### Key Findings
-
-- The model performs well for predicting non-completed bookings but exhibits lower recall for completed bookings due to class imbalance.
-- **Purchase lead time** is the most influential predictor of booking completion.
-- Travel timing features (flight hour, flight day, length of stay) are significant predictors.
-- Add-on services (extra baggage, preferred seats, in-flight meals) have a smaller but noticeable impact.
-- Cross-validation indicates variability in model performance, suggesting opportunities for further tuning or alternative approaches.
-
----
-
-## Project Structure
-
-```
-BA_Customer_Booking_Prediction/
-|-- Data/
-|   |-- customer_booking.csv
-|-- Image/
-|-- ba_customer_booking_prediction_ipynb.py
-|-- BA_Customer_Booking_Prediction.ipynb
-|-- README.md
-|-- Requirements.txt
-```
-
----
-
-## Technologies Used
-
-| Library       | Purpose                                  |
-|---------------|------------------------------------------|
-| Python        | Programming language                     |
-| Pandas        | Data manipulation and analysis           |
-| NumPy         | Numerical computation                    |
-| Matplotlib    | Data visualisation                       |
-| Scikit-learn  | Machine learning and model evaluation    |
-
----
-
-## How to Run
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Rutuja1423/BA_Customer_Booking_Prediction.git
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r Requirements.txt
-   ```
-3. Run the Jupyter Notebook:
-   ```bash
-   jupyter notebook BA_Customer_Booking_Prediction.ipynb
-   ```
-
----
-
-## Author
-
+## 11. Author
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Rutuja%20Shinde-blue?style=flat&logo=linkedin)](https://www.linkedin.com/in/rutuja-shinde-bb83b0215/)
 [![GitHub](https://img.shields.io/badge/GitHub-Rutuja1423-black?style=flat&logo=github)](https://github.com/Rutuja1423)
 
----
-
-## License
-
-This project is intended for educational and analytical purposes.
